@@ -27,13 +27,19 @@ article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
   display: block; }
 
-#chat1 {
+#menu1 {
     display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center;     /* Centra verticalmente */
-    height: 100vh;           /* Esto asegura que el div ocupe toda la altura de la ventana */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative; /* Asegura que el título quede encima del chat si es necesario */
+    z-index: 1; /* Da un z-index más bajo si el chat tiene uno alto */
 }
 
+.titulo {
+    position: relative;
+    z-index: 10; /* Asegura que el título esté por encima del chat */
+}
 
 	
 }
