@@ -28,11 +28,12 @@ footer, header, hgroup, menu, nav, section {
   display: block; }
 
 #chat1 {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center;     /* Centra verticalmente */
+    height: 100vh;           /* Esto asegura que el div ocupe toda la altura de la ventana */
+}
 
-margin-left:auto;
-margin-right:auto;
-height:800px;
-width:800px;
 
 	
 }
