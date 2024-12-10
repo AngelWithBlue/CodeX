@@ -423,15 +423,16 @@ section.special, article.special {
 header p {
   color: rgba(255, 255, 255, 0.5);
   position:relative;
-  margin: 0 0 700px 0;
+  margin: 0 0 300px 0;
   text-align:center;
 }
 
-header h1 {
-
-text-align:center;
-
-
+#header h1 {
+  font-size: 8vw; /* Usamos vw para adaptarse al ancho de la pantalla */
+  word-wrap: break-word;
+  text-align: center;
+  margin: 0 auto; /* Centramos el texto */
+  transition: font-size 0.3s ease-in-out; /* Suaviza el cambio de tamaño */
 }
 
 header h2 + p {
@@ -451,17 +452,32 @@ header h6 + p {
   margin-top: -0.6em;
   line-height: 1.5em; }
 
-@media screen and (max-width: 980px) {
-  header br {
-    display: none; } }
+/* Media Queries */
+@media screen and (max-width: 1200px) {
+  #header h1 {
+    font-size: 9vw; /* Aumenta ligeramente el tamaño para pantallas medianas */
+  }
+}
 
 @media screen and (max-width: 736px) {
-  header br {
-    display: inline; } }
+  #header h1 {
+    font-size: 12vw; /* Ajusta el tamaño para tablets */
+  }
+
+  header p {
+    font-size: 1em; /* Reducción para párrafos en tablets */
+  }
+}
 
 @media screen and (max-width: 480px) {
-  header br {
-    display: none; } }
+  #header h1 {
+    font-size: 15vw; /* Ajusta aún más el tamaño para móviles */
+  }
+
+  header p {
+    font-size: 0.9em; /* Ajuste en tamaño de texto para móviles */
+  }
+}
 
 /* Icon */
 .icon {
@@ -884,42 +900,6 @@ button,
     font-size: 1em; /* Hacer el texto del párrafo más pequeño en pantallas pequeñas */
   }
 }
-/* Signup Form */
-#signup-form {
-  display: -moz-flex;
-  display: -webkit-flex;
-  display: -ms-flex;
-  display: flex;
-  position: relative; }
-  #signup-form input[type="text"],
-  #signup-form input[type="password"],
-  #signup-form input[type="email"] {
-    width: 18em; }
-  #signup-form > * {
-    margin: 0 0 0 1em; }
-  #signup-form > :first-child {
-    margin: 0 0 0 0; }
-  @media screen and (max-width: 480px) {
-    #signup-form {
-      -moz-flex-direction: column;
-      -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-      flex-direction: column; }
-      #signup-form input[type="type"],
-      #signup-form input[type="password"],
-      #signup-form input[type="email"] {
-        width: 100%; }
-      #signup-form > * {
-        margin: 1.25em 0 0 0; }
-      #signup-form .message {
-        bottom: -1.5em;
-        font-size: 0.9em;
-        height: 1em;
-        left: 0;
-        line-height: inherit;
-        margin-top: 0;
-        position: absolute; } }
-
 /* Footer */
 #footer {
  
