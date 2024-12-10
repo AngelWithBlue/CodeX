@@ -853,26 +853,37 @@ button,
 
 /* Header */
 #header h1 {
-  font-size: 3.25em;
-  margin: 0 0 0.55em 0; }
+  font-size: 3.25em; /* Tamaño base para pantallas grandes */
+  margin: 0 0 0.55em 0;
+  transition: font-size 0.3s ease-in-out; /* Suaviza el cambio del tamaño */
+}
 
 #header p {
   font-size: 1.35em;
-  line-height: 1.65em; }
+  line-height: 1.65em;
+}
 
-#header a {
-  color: inherit; }
+@media screen and (max-width: 1200px) {
+  #header h1 {
+    font-size: 2.5em; /* Reducir tamaño en pantallas medianas (tablets, etc.) */
+  }
+}
 
 @media screen and (max-width: 736px) {
   #header h1 {
-    font-size: 2em; }
-  #header p {
-    font-size: 1em; } }
+    font-size: 2em; /* Reducir aún más el tamaño en pantallas más pequeñas */
+  }
+}
 
 @media screen and (max-width: 480px) {
-  #header {
-    margin: 0 0 1em 0; } }
+  #header h1 {
+    font-size: 1.5em; /* Para móviles, reducir el tamaño del título */
+  }
 
+  #header p {
+    font-size: 1em; /* Hacer el texto del párrafo más pequeño en pantallas pequeñas */
+  }
+}
 /* Signup Form */
 #signup-form {
   display: -moz-flex;
