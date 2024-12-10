@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Ajedrez</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboardjs/1.0.0/chessboard-1.0.0.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #board1 {
+            margin: 20px auto;
+            margin-bottom:100px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+
+    <!-- Contenedor para el tablero de ajedrez -->
+    <div id="board1" style="width: 400px;"></div>
+
+    <!-- Botón para reiniciar el juego -->
+    <button id="startBtn">Iniciar Juego</button>
+
+    <!-- Incluir las librerías necesarias -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboardjs/1.0.0/chessboard-1.0.0.min.js"></script>
+
+    <script>
+        // Inicializamos el juego con Chess.js
+        var game = new Chess();
+
+        // Inicializamos el tablero con Chessboard.js
+        var board = Chessboard('board1', {
+            draggable: true,  // Habilitamos el movimiento de las piezas
+            dropOffBoard: 'trash',  // Si las piezas se caen fuera del tablero se eliminan
+            sparePieces: true,  // Habilitamos piezas extra
+            onDrop: handleMove  // Llamamos esta función cuando una pieza se mueve
+        });
+
+        // Función para manejar los movimientos
+        function handleMove(source, target) {
+            var move = game.move({
+                from: source,
+                to: target
+            });
+
+            renderMoveHistory(game.history());  // Actualizamos el historial de movimientos
+            board.position(game.fen());  // Actualizamos el tablero con el estado actual
+        }
+
+        // Función para mostrar el historial de movimientos
+        function renderMoveHistory(moves) {
+            var historyElement = document.getElementById('status');
+            historyElement.innerHTML = 'Movimientos: ' + moves.join(' ');
+        }
+
+        // Función para iniciar el juego
+        function startGame() {
+            game.reset();  // Reseteamos el juego
+            board.position(game.fen());  // Establecemos la posición inicial
+            renderMoveHistory(game.history());  // Mostramos el historial de movimientos
+        }
+
+        // Configuramos el evento del botón de iniciar juego
+        document.getElementById('startBtn').addEventListener('click', function() {
+            startGame();  // Llamamos a la función de inicio al hacer clic
+        });
+
+        // Iniciar el juego automáticamente al cargar la página
+        startGame();
+    </script>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<hr>
+<footer>
+    <div>
+        <p>&copy; 2024 Torneo de Ajedrez | Todos los derechos reservados | <a href="index.html">Página Principal</a></p>
+    </div>
+</footer>
+</body>
+</html>

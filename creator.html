@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ジョアン</title>
+    <link rel="stylesheet" href="assets/css/creator.css" />
+</head>
+<body>
+    <!-- particles.js container -->
+    <div id="particles-js"></div>
+
+    <!-- stats - count particles -->
+    <div class="count-particles">
+      <center>
+      <span class="js-count-particles"><a href="index.html">ジョアン watches you</a></span> 
+    </center>
+    </div>
+
+    <!-- particles.js lib (JavaScript CodePen settings): https://github.com/VincentGarreau/particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+   
+    <!-- Initialization script for particles.js -->
+    <script>
+        particlesJS("particles-js", {
+            particles: {
+                number: {
+                    value: 100,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                shape: {
+                    type: "circle",
+                    stroke: {
+                        width: 0,
+                        color: "#000000"
+                    },
+                    polygon: {
+                        nb_sides: 5
+                    }
+                },
+                opacity: {
+                    value: 0.5,
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 40,
+                        size_min: 0.1,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#ffffff",
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 6,
+                    direction: "none",
+                    random: false,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false,
+                    attract: {
+                        enable: false,
+                        rotateX: 600,
+                        rotateY: 1200
+                    }
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: "repulse"
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: "push"
+                    },
+                    resize: true
+                }
+            },
+            retina_detect: true
+        });
+    </script>
+
+</body>
+</html>
