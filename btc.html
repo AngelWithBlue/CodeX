@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfica en tiempo real de Bitcoin</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Contenedor para la gráfica */
+        #chart-container {
+            width: 80%; /* Ancho del contenedor (80% del ancho de la página) */
+            height: 400px; /* Alto fijo para el gráfico */
+            margin: 0 auto; /* Centrado en la página */
+        }
+
+        /* Canvas (gráfico) */
+        #bitcoinChart {
+            width: 100% !important; /* Se adapta al 100% del contenedor */
+            height: 100% !important; /* Se adapta al 100% del contenedor */
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Precio de Bitcoin en tiempo real (se supone)</h2>
+
+    <!-- Contenedor para la gráfica -->
+    <div id="chart-container">
+        <!-- Canvas donde se dibujará la gráfica -->
+        <canvas id="bitcoinChart"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('bitcoinChart').getContext('2d');
+
+        // Inicializar el gráfico
+        const bitcoinChart = new Chart(ctx, {
+            type: 'line', 
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Precio de Bitcoin',
+                    data: [],
+                    borderColor: 'rgba(75, 192, 192, 1)',  
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)', 
+                    fill: false, 
+                    tension: 0.1, 
+                    pointRadius: 3,
+                    pointBackgroundColor: 'rgba(75, 192, 192, 1)', 
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: {
+                            display: true,
+                            text: 'Tiempo'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Precio (USD)'
+                        }
+                    }
+                },
+                responsive: true,  
+                maintainAspectRatio: false 
+            }
+        });
+
+        // Función para actualizar la gráfica con el precio de Bitcoin
+        async function updateChart() {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+                const data = await response.json();
+
+                const price = data.bitcoin.usd; 
+                const timestamp = new Date().getTime(); 
+
+                // Agregar el precio y timestamp al gráfico
+                bitcoinChart.data.labels.push(timestamp);
+                bitcoinChart.data.datasets[0].data.push(price);
+
+                // Limitar el número de puntos a 50 para mantener el rendimiento
+                const maxDataPoints = 50;
+                if (bitcoinChart.data.labels.length > maxDataPoints) {
+                    bitcoinChart.data.labels.shift();
+                    bitcoinChart.data.datasets[0].data.shift();
+                }
+
+                // Actualizar la gráfica solo cuando hay nuevos datos
+                bitcoinChart.update('none');
+            } catch (error) {
+                console.error('Error al obtener los datos:', error);
+            }
+        }
+
+        // Actualizar la gráfica cada 1 minuto (60,000 ms)
+        setInterval(updateChart, 60000);
+
+        // Hacer una primera actualización inmediata para mostrar datos
+        updateChart();
+    </script>
+</body>
+</html>
