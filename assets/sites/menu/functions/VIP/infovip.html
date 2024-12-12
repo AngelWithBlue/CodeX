@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proximamente</title>
+  <style>
+  body {
+    background: #111;
+    color: #411;
+    font-family: Consolas, Courier, monospace;
+    font-size: 60px;
+    text-shadow: 0 0 15px #411;
+    height: 100%;
+  }
+  
+  div {
+    position: relative;
+    top: 50%;
+    margin: 300px auto;
+    text-align: center;
+  }
+  
+  .glow {
+    color: #f00;
+    text-shadow: 0px 0px 10px #f00;
+  }
+  
+  span {
+    display: inline-block;
+    padding: 0 10px;
+  }
+  footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px 0;
+      margin-top: auto;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <div id="loading">prozimamente, ozea, en mantenimiento</div>
+  <footer>
+    <a href="../../codex_menu.html">Atrás</a>
+  </footer>
+  <script>
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split('');
+    let letter_count = 0;
+    const el = $("#loading");
+    const word = el.html().trim();
+    let finished = false;
+
+    el.html("");
+    for (let i = 0; i < word.length; i++) {
+      el.append("<span>" + word.charAt(i) + "</span>");
+    }
+
+    setTimeout(write, 75);
+    let incrementer = setTimeout(inc, 1000);
+
+    function write() {
+      for (let i = letter_count; i < word.length; i++) {
+        const c = Math.floor(Math.random() * alphabet.length);
+        $("span")[i].innerHTML = alphabet[c];
+      }
+      if (!finished) {
+        setTimeout(write, 75);
+      }
+    }
+
+    function inc() {
+      $("span")[letter_count].innerHTML = word[letter_count];
+      $("span:eq(" + letter_count + ")").addClass("glow");
+      letter_count++;
+      if (letter_count >= word.length) {
+        finished = true;
+        setTimeout(reset, 1500);
+      } else {
+        setTimeout(inc, 1000);
+      }
+    }
+
+    function reset() {
+      letter_count = 0;
+      finished = false;
+      setTimeout(inc, 1000);
+      setTimeout(write, 75);
+      $("span").removeClass("glow");
+    }
+  </script>
+</body>
+</html>

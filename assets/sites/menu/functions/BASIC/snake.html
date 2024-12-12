@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bob :></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .menu button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .menu button:hover {
+            background-color: #45a049;
+        }
+        .stats {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            margin: 10px;
+            color: #ff6347;
+            font-size: 24px;
+        }
+        #gameContainer {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        #gameCanvas {
+            border: 5px solid #444;
+            background-color: #222;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .controls button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .controls button:active {
+            background-color: #45a049;
+        }
+        footer {
+            text-align: center;
+            font-size: 14px;
+            color: #ccc;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Este es bob, solo quiere comer manzanas, no dejes morir a bob</h1>
+    <div class="menu" id="menu">
+        
+        <button onclick="startGame()">Empezar Partida</button>
+    </div>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+        <div class="controls">
+            <button onclick="setDirection('ArrowUp')">▲</button>
+            <div>
+                <button onclick="setDirection('ArrowLeft')">◄</button>
+                <button onclick="setDirection('ArrowRight')">►</button>
+            </div>
+            <button onclick="setDirection('ArrowDown')">▼</button>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Todos los derechos reservados para bob | <a href="../../../../../index.html">Página Principal</a></p>
+    </footer>
+    <script>
+     // Variables de configuración del juego
+     const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const gridSize = 20;
+        let score = 0;
+        let level = 1;
+        let snake = [{ x: 160, y: 160 }];
+        let food = { x: 100, y: 100 };
+        let dx = gridSize;
+        let dy = 0;
+        let gameInterval;
+        let isGameOver = false;
+
+        
+        // Redimensionar canvas para adaptarse al contenedor
+        function resizeCanvas() {
+            const container = document.getElementById('gameContainer');
+            const size = Math.min(container.offsetWidth, container.offsetHeight - 100); // Ajuste dinámico
+            canvas.width = size;
+            canvas.height = size;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas(); // Llamar inicialmente
+
+        // Controles táctiles
+        function setDirection(direction) {
+            const event = new KeyboardEvent('keydown', { key: direction });
+            document.dispatchEvent(event);
+        }
+
+        
+    // Función para iniciar el juego
+    function startGame() {
+            // Inicializamos el estado del juego
+            snake = [{ x: 160, y: 160 }];
+            dx = gridSize;
+            dy = 0;
+            score = 0; // Reiniciar el puntaje
+            level = 1;
+            food = { x: getRandomCoordinate(), y: getRandomCoordinate() };
+            isGameOver = false;
+            menu.style.display = 'none';
+            document.addEventListener('keydown', changeDirection);
+            gameInterval = setInterval(updateGame, 100); // Intervalo en 100ms (nivel 1)
+        }
+        // Dirección
+        function changeDirection(event) {
+            if (event.key === 'ArrowUp' && dy === 0) {
+                dx = 0;
+                dy = -gridSize;
+            } else if (event.key === 'ArrowDown' && dy === 0) {
+                dx = 0;
+                dy = gridSize;
+            } else if (event.key === 'ArrowLeft' && dx === 0) {
+                dx = -gridSize;
+                dy = 0;
+            } else if (event.key === 'ArrowRight' && dx === 0) {
+                dx = gridSize;
+                dy = 0;
+            }
+        }
+
+     // Función para actualizar el juego
+     function updateGame() {
+            if (isGameOver) {
+                clearInterval(gameInterval);
+                showGameOver();
+                return;
+            }
+
+            moveSnake();
+            checkCollisions();
+            checkFoodCollision();
+            drawGame();
+        }
+
+        // Mover la serpiente
+        function moveSnake() {
+            const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+            snake.unshift(head); // Añadir una nueva cabeza
+            snake.pop(); // Eliminar la cola
+        }
+
+        // Comprobar colisiones
+        function checkCollisions() {
+            const head = snake[0];
+
+            // Colisión con los muros
+            if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
+                isGameOver = true;
+            }
+
+            // Colisión con el propio cuerpo
+            for (let i = 1; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) {
+                    isGameOver = true;
+                }
+            }
+        }
+
+        // Comprobar si la serpiente ha comido la comida
+        function checkFoodCollision() {
+            const head = snake[0];
+            if (head.x === food.x && head.y === food.y) {
+                score += 10; // Añadir 10 puntos por cada comida
+                levelUp();
+                snake.push({}); // Añadir una nueva sección a la serpiente
+                food = { x: getRandomCoordinate(), y: getRandomCoordinate() };
+            }
+        }
+
+        function levelUp() {
+            if (score % 50 === 0) {
+                level++;
+                clearInterval(gameInterval);
+                gameInterval = setInterval(updateGame, 100 - level * 10);
+            }
+        }
+
+        function getRandomCoordinate() {
+            return Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize;
+        }
+
+   // Dibujar el juego en el canvas
+function drawGame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Dibujar la serpiente
+    snake.forEach((segment, index) => {
+        ctx.fillStyle = '#32CD32';
+        ctx.fillRect(segment.x, segment.y, gridSize, gridSize);
+
+        // Dibujar ojos y lengua en la cabeza de la serpiente
+        if (index === 0) {
+            drawSnakeHead(segment);
+        }
+    });
+
+    // Dibujar la comida (manzana)
+    drawFood();
+
+    // Mostrar estadísticas en tiempo real (puntaje y nivel)
+    ctx.fillStyle = 'white';
+    ctx.font = '20px Arial';
+    ctx.fillText(`Puntaje: ${score} | Nivel: ${level}`, 10, 30);
+}
+
+// Dibujar la comida en forma de manzana
+function drawFood() {
+    // Dibujar el cuerpo de la manzana (círculo rojo)
+    ctx.beginPath();
+    ctx.arc(food.x + gridSize / 2, food.y + gridSize / 2, gridSize / 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#FF6347'; // Rojo
+    ctx.fill();
+    ctx.closePath();
+
+    // Dibujar el tallo de la manzana (línea marrón)
+    ctx.beginPath();
+    ctx.moveTo(food.x + gridSize / 2, food.y + gridSize / 2 - gridSize / 2.5);
+    ctx.lineTo(food.x + gridSize / 2, food.y + gridSize / 2 - gridSize / 1.5);
+    ctx.strokeStyle = '#8B4513'; // Marrón
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.closePath();
+
+    // Dibujar la hoja (triángulo verde)
+    ctx.beginPath();
+    ctx.moveTo(food.x + gridSize / 2, food.y + gridSize / 2 - gridSize / 1.5);
+    ctx.lineTo(food.x + gridSize / 2 + gridSize / 6, food.y + gridSize / 2 - gridSize / 1.8);
+    ctx.lineTo(food.x + gridSize / 2 - gridSize / 6, food.y + gridSize / 2 - gridSize / 1.8);
+    ctx.fillStyle = '#32CD32'; // Verde
+    ctx.fill();
+    ctx.closePath();
+}
+
+// Dibujar la cabeza de la serpiente con ojos y lengua
+function drawSnakeHead(segment) {
+    const centerX = segment.x + gridSize / 2;
+    const centerY = segment.y + gridSize / 2;
+
+    // Dibujar los ojos (círculos blancos con pupilas negras)
+    ctx.beginPath();
+    ctx.arc(centerX - gridSize / 5, centerY - gridSize / 5, gridSize / 8, 0, Math.PI * 2); // Ojo izquierdo
+    ctx.arc(centerX + gridSize / 5, centerY - gridSize / 5, gridSize / 8, 0, Math.PI * 2); // Ojo derecho
+    ctx.fillStyle = 'white';
+    ctx.fill();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.arc(centerX - gridSize / 5, centerY - gridSize / 5, gridSize / 16, 0, Math.PI * 2); // Pupila izquierda
+    ctx.arc(centerX + gridSize / 5, centerY - gridSize / 5, gridSize / 16, 0, Math.PI * 2); // Pupila derecha
+    ctx.fillStyle = 'black';
+    ctx.fill();
+    ctx.closePath();
+
+    // Dibujar la lengua (línea roja)
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY + gridSize / 4); // Punto de inicio de la lengua
+    ctx.lineTo(centerX, centerY + gridSize / 1.5); // Extremo de la lengua
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#FF4500'; // Rojo para la lengua
+    ctx.stroke();
+    ctx.closePath();
+
+    // Dibujar bifurcación de la lengua
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY + gridSize / 1.5);
+    ctx.lineTo(centerX - gridSize / 10, centerY + gridSize / 1.3); // Extremo izquierdo
+    ctx.moveTo(centerX, centerY + gridSize / 1.5);
+    ctx.lineTo(centerX + gridSize / 10, centerY + gridSize / 1.3); // Extremo derecho
+    ctx.strokeStyle = '#FF4500';
+    ctx.stroke();
+    ctx.closePath();
+}
+    // Mostrar mensaje de fin de juego
+    function showGameOver() {
+            const gameOverMessage = document.createElement('div');
+            gameOverMessage.classList.add('gameOver');
+            
+            // Solo mostramos el mensaje de fin de juego sin botón de reiniciar
+            menu.style.display = 'flex'; // Mostrar el menú de inicio
+        }
+    </script>
+</body>
+</html>
